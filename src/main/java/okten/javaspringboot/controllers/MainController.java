@@ -2,6 +2,7 @@ package okten.javaspringboot.controllers;
 
 import okten.javaspringboot.models.Customer;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +38,7 @@ public class MainController {
                         .filter(customer -> customer.getId() == id)
                         .findFirst()
                         .get(),
-                HttpStatus.OK
+                HttpStatusCode.valueOf(200)
         );
     }
 
@@ -49,10 +50,34 @@ public class MainController {
     }
 
     /* Delete customer by id */
-    @DeleteMapping("/customers/{id}")
+    @DeleteMapping("/customers")
     @ResponseStatus(HttpStatus.OK)
     public void deleteCustomer(@PathVariable int id) {
         this.customers.removeIf(customer -> Objects.equals(customer.getId(), id));
+    }
+
+    /* Replace customer by id and data */
+    @PutMapping("/customers/{id}")
+    public ResponseEntity<Customer> replaceCustomer(@PathVariable int id, @RequestBody Customer customer) {
+        int index = this.customers.indexOf(findCustomerById(id));
+        this.customers.set(index, customer);
+        return new ResponseEntity<>(customer, HttpStatus.CREATED);
+    }
+
+    /* Update customer by id and data */
+    @PatchMapping("/customers/{id}")
+    public ResponseEntity<Customer> updateCustomer(@PathVariable int id, @RequestBody Customer customer) {
+        Customer customerFound = findCustomerById(id);
+        customerFound.setName(customer.getName());
+        customerFound.setEmail(customer.getEmail());
+        return new ResponseEntity<>(customerFound, HttpStatus.CREATED);
+    }
+
+    private Customer findCustomerById(int id) {
+        return this.customers.stream()
+                .filter(c -> Objects.equals(c.getId(), id))
+                .findFirst()
+                .get();
     }
 
 }
