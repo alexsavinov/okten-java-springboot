@@ -34,10 +34,7 @@ public class MainController {
     @GetMapping({"/customers/{id}"})
     public ResponseEntity<Customer> getCustomer(@PathVariable int id) {
         return new ResponseEntity<>(
-                this.customers.stream()
-                        .filter(customer -> customer.getId() == id)
-                        .findFirst()
-                        .get(),
+                findCustomerById(id),
                 HttpStatusCode.valueOf(200)
         );
     }
