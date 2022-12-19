@@ -14,15 +14,19 @@ import org.hibernate.validator.constraints.Length;
 @NoArgsConstructor
 @Data
 @Builder
-public class Customer {
+public class Client {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
-    private Long id;
+    private int id;
+
     @Length(min = 3, message = "Name must be 3 characters minimum")
     @Length(max = 20, message = "Name must be 20 characters maximum")
     private String name;
+
     private String surname;
+
     @NotEmpty
     @Email
     private String email;
